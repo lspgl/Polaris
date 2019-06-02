@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Polaris</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+</head>
+
+<body>
+
+<script type="text/javascript">
+    function get_departures () {
+        $.getJSON( "/get_departures_req", function( data ) {
+                var items = [];
+
+                $.each( data, function( key, val ) {
+                    items.push( "<li class='line-header' id='" + key + "'>" + key + "</li>" );
+                    $.each( val, function(idx, entry) {
+                        items.push("<li class='line-entry'>" + entry.dt_m + "m " + entry.final + " (" + entry.dep + ")</li>");
+                    });
+                });
+                console.log(items)
+
+                $("#departure-container").html(
+                    $( "<ul/>", {
+                        "class": "my-new-list",
+                        html: items.join( "" )
+                    }));
+            });
+    }
+
+
+    $(document).ready(function() {
+        get_departures()
+        setInterval(get_departures, 5000);
+
+    });
+
+</script>
+
+<div id="departure-container"></div>
+
+</body>
+</html>
