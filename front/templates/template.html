@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Polaris</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css?version=x">
+    <link rel="stylesheet" type="text/css" href="/static/css/weather-icons.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+
+
+</head>
+<body>
+
+<div id="header">
+    <div id="header-title">Polaris</div>
+    <div id="header-time"></div>
+</div>
+
+<script>
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    function header_time() {
+        var dt = new Date()
+        document.getElementById("header-time").innerHTML = days[dt.getDay()] + ' ' + dt.getDate() + '.' + (dt.getMonth() + 1) + ' - ' + dt.toLocaleTimeString()
+        setTimeout(header_time, 1000);
+    }
+    header_time();
+
+    var polaris_header = document.getElementById('header-title');
+    polaris_header.onclick = function() {
+        location.reload(true);
+    };
+</script>
+
+
+<script type="text/javascript">
+    function get_departures () {
+        $.getJSON( "/get_departures_req", function( data ) {
+                var items = [];
+                items.push("<ul id='stationboard-list'>");
+                $.each( data, function( idx, entry ) {
+                    items.push( "<li class='stationboard-item'><div class='line-wrapper'>");
+                    items.push( "<div class='line-icon' style='background-color:"+ entry.background + "; color:" + entry.foreground +"'>" + entry.number + "</div>");
+                    items.push( "<div class='line-dest'>" + entry.final + "</div>");
+                    items.push( "<div class='line-dep'>" + entry.dt_m + " " + entry.delay + "</div>");
+                    items.push( "</div></li>");
+
+                });
+                items.push("</ul>");
+                // console.log(items.join(""))
+
+                $("#stationboard-list").replaceWith(items.join(""));
+            });
+    }
+
+
+
+
+    function get_weather () {
+        $.getJSON("/get_weather_req", function( data ) {
+            var weather_now = data[0]
+            var temperature_now = weather_now.temperature + '°'
+
+            var weather_today = data[1]
+            var temperature_today_high = weather_today.high + '°'
+            var temperature_today_low = weather_today.low + '°'
+
+            $("#weather-now-icon").html("<nobr><i class='wi " +
+            weather_now.icon +
+            " weather-icons-now'></i>" +
+            "<span class='temperature-now'>" +
+            temperature_now + "</span></nobr>" +
+            "<br class='weather-icon-linebreak'><span class='weather-condition-now'>"+
+            weather_now.text + " | " + temperature_today_high + '/' + temperature_today_low +
+            "</span>"
+            );
+        });
+    }
+
+    $(document).ready(function() {
+        get_departures()
+        get_weather()
+        setInterval(get_departures, 5000);
+        setInterval(get_weather, 60000);
+
+    });
+
+
+</script>
+
+<div id="stationboard-wrapper">
+    <div id="stationboard-list"></div>
+</div>
+
+<div id="weather-wrapper">
+    <div id="weather-now">
+        <div id="weather-now-icon"></div>
+    </div>
+    <div id="weather-forecast"></div>
+</div>
+</body>
+</html>

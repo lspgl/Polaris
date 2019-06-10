@@ -1,5 +1,13 @@
 import datetime
 
+COLORS = {'T 14': ['#009ee3', '#fff'],
+          'T 7': ['#000', '#fff'],
+          'T 9': ['#4a3a90', '#fff'],
+          'T 10': ['#e82d89', '#fff'],
+          'BUS 69': ['#fff', '#000'],
+          'BUS 72': ['#daaea0', '#000']
+          }
+
 
 class StationBoard:
     def __init__(self, header):
@@ -15,13 +23,24 @@ class Departure:
     def __init__(self, row):
         self.line = row['Fahrt']
 
-        for i, char in enumerate(self.line):
-            if char.isdigit():
-                break
+        if 'NB N' in self.line:
+            self.number = self.line.split('NB ')[-1]
+            self.mode = 'NB'
+            self.background = '#000'
+            self.foreground = '#ffea03'
+        else:
 
-        # TODO: Nightbusses (NB N6) cannot be distinguised uniquely with this logic (vs. T 6, both result in number 6)
-        self.mode = self.line[:i].strip()
-        self.number = self.line[i:].strip()
+            for i, char in enumerate(self.line):
+                if char.isdigit():
+                    break
+            self.mode = self.line[:i].strip()
+            self.number = self.line[i:].strip()
+
+            self.background = '#fff'
+            self.foreground = '#000'
+
+        if self.line in COLORS:
+            self.background, self.foreground = COLORS[self.line]
 
         self.departure_time = self._time_string_to_datetime(row['Ab'])
         self.delay = row['Prognose']

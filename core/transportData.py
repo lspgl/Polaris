@@ -64,6 +64,7 @@ class SbbProvider:
 
     def fetch(self, station_id, nqueries='20', time='now'):
         url = self.urlmaker(station_id, nqueries)
+        print(url)
         resource = urllib.request.urlopen(url)
         content_raw = resource.read().decode(resource.headers.get_content_charset())
 
@@ -85,26 +86,39 @@ class SbbProvider:
 
 
 def get_departures(provider):
-    watchlist = [7, 14]
-
-    watch_data = {}
+    departure_data = []
     station_board, specials = provider.content
     for dep in station_board.departures:
-        if int(dep.number) in watchlist:
-            watch_data.setdefault(int(dep.number), []).append(dep)
+        t = dep.departure_time
+        t_str = t.strftime("%d-%m %H:%M")
+        dt = t - datetime.datetime.now()
+        dt_min, dt_sec = divmod(dt.seconds, 60)
+        dt_min += 1
+        if dt_min > 1000:
+            dt_min -= 1440
 
-    package = {}
-    for key, value in watch_data.items():
-        for dep in value:
-            t = dep.departure_time
-            t_str = t.strftime("%d-%m %H:%M")
-            dt = t - datetime.datetime.now()
-            dt_min, dt_sec = divmod(dt.seconds, 60)
-            if dt_min == 1439:
-                dt_min = 0
-            package.setdefault(key, []).append({'dep': t_str, 'final': dep.final_destination, 'dt_m': dt_min, 'dt_s': dt_sec})
+        if dt_min in [0, -1] and dep.delay == '':
+            if dep.mode == 'T':
+                img = 'tram'
+            else:
+                img = 'bus'
+            dt_min = '<img src="/static/img/dep_' + img + '_white.png" style="margin-top:10px; margin-right:-10px;"/>'
+        else:
+            dt_min = str(dt_min) + "'"
 
-    return package
+        dest = dep.final_destination.split('Zürich,', 1)[-1].strip()
+
+        departure_data.append({'line': dep.line,
+                               'mode': dep.mode,
+                               'number': dep.number,
+                               'dep': t_str,
+                               'final': dest,
+                               'dt_m': dt_min,
+                               'dt_s': dt_sec,
+                               'delay': dep.delay,
+                               'foreground': dep.foreground,
+                               'background': dep.background})
+    return departure_data
 
 
 if __name__ == '__main__':

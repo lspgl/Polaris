@@ -1,0 +1,117 @@
+body {
+    font-family: Roboto;
+    margin:0;
+    background-color: #212121;
+    height:100%;
+}
+
+html {
+    height:100%;
+}
+
+#header {
+    width:auto;
+    background-color: #000;
+    height:20px;
+    padding:10px;
+}
+
+#header-title {
+    float:left;
+    color:#dbdbdb;
+}
+
+#header-time {
+    float:right;
+    color:#dbdbdb;
+}
+
+#stationboard-wrapper{
+    float:left;
+    width:60%;
+}
+
+#weather-wrapper {
+    color: #dbdbdb;
+    float:right;
+    width:35%;
+    height:100%;
+}
+
+#stationboard-list{
+    list-style:none;
+}
+
+.line-wrapper{
+    padding:10px;
+    width:auto;
+    height:50px;
+    display:block;
+    border-bottom: 1px solid #484848;
+}
+
+
+.line-icon {
+    width:50px;
+    height:50px;
+    border-radius:5px;
+    line-height:50px;
+    text-align:center;
+    font-size:24px;
+    float:left;
+}
+
+.line-dest {
+    float:left;
+    line-height:50px;
+    margin-left:50px;
+    font-size:18px;
+    color: #dbdbdb;
+}
+
+.line-dep {
+    float:right;
+    line-height:50px;
+    margin-left:50px;
+    font-size:18px;
+    color: #dbdbdb;
+}
+
+.weather-icons-now {
+    font-size:15vmin;
+}
+
+.weather-icons-forecast {
+    font-size:50px;
+}
+
+#weather-now{
+    height: 40%;
+    width:100%;
+}
+
+#weather-now-icon {
+    text-align:center;
+    margin-top:20px;
+    float:left;
+    width:100%;
+    height:100%;
+    display: flex;
+    justify-content:center;
+    align-content:center;
+    flex-direction:column;
+}
+
+.weather-icon-linebreak {
+    line-height:4vmin;
+
+}
+.weather-condition-now {
+    font-size:4vmin;
+    font-weight:100;
+    color: #484848;
+}
+
+.temperature-now {
+    font-size:15vmin;
+}
