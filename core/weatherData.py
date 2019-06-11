@@ -72,6 +72,7 @@ class Weather():
         self.data.get_yahoo_weather_by_city('zuerich', Unit.celsius)
 
     def get_weather(self):
+        self.data.get_yahoo_weather_by_city('zuerich', Unit.celsius)
         today = self.data.condition.__dict__
         next_3 = [f.__dict__ for f in self.data.forecasts[:4]]
 
