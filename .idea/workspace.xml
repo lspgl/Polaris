@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="80103b13-39cf-4721-826b-19f0fba43977" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/core/weatherData.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/weatherData.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/static/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/front/static/css/style.css" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -21,20 +22,20 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/front/static/css/style.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="936">
-              <caret line="164" column="12" selection-start-line="164" selection-start-column="12" selection-end-line="164" selection-end-column="12" />
+            <state relative-caret-position="1032">
+              <caret line="168" column="17" selection-start-line="168" selection-start-column="17" selection-end-line="168" selection-end-column="17" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/core/weatherData.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="573">
-              <caret line="125" selection-start-line="125" selection-end-line="125" />
+            <state relative-caret-position="477">
+              <caret line="121" column="29" lean-forward="true" selection-start-line="121" selection-start-column="29" selection-end-line="121" selection-end-column="29" />
               <folding>
                 <element signature="e#1#16#0" expanded="true" />
                 <element signature="e#513#2621#0" />
@@ -104,8 +105,8 @@
         <option value="$PROJECT_DIR$/core/.secret" />
         <option value="$PROJECT_DIR$/front/app.py" />
         <option value="$PROJECT_DIR$/front/templates/template.html" />
-        <option value="$PROJECT_DIR$/front/static/css/style.css" />
         <option value="$PROJECT_DIR$/core/weatherData.py" />
+        <option value="$PROJECT_DIR$/front/static/css/style.css" />
       </list>
     </option>
   </component>
@@ -328,13 +329,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/front/static/css/style.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="936">
-          <caret line="164" column="12" selection-start-line="164" selection-start-column="12" selection-end-line="164" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/core/.secret">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="24">
@@ -358,12 +352,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/core/weatherData.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="573">
-          <caret line="125" selection-start-line="125" selection-end-line="125" />
+        <state relative-caret-position="477">
+          <caret line="121" column="29" lean-forward="true" selection-start-line="121" selection-start-column="29" selection-end-line="121" selection-end-column="29" />
           <folding>
             <element signature="e#1#16#0" expanded="true" />
             <element signature="e#513#2621#0" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/front/static/css/style.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1032">
+          <caret line="168" column="17" selection-start-line="168" selection-start-column="17" selection-end-line="168" selection-end-column="17" />
         </state>
       </provider>
     </entry>

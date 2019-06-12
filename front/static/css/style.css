@@ -145,7 +145,7 @@ html {
     position: absolute;
     bottom:0;
     color:#fff3cd;
-    font-size:0.9vw;
+    font-size:1.2vw;
     text-align:center;
     font-weight:100;
 
@@ -157,7 +157,7 @@ html {
     position: absolute;
     bottom:0;
     color:#e3effd;
-    font-size:0.9vw;
+    font-size:1.2vw;
     text-align:center;
     font-weight:100;
 }
@@ -166,7 +166,7 @@ html {
     position: absolute;
     bottom:0;
     color:#e3effd;
-    font-size:.9vw;
+    font-size:1.2vw;
     text-align:center;
     font-weight:100;
 }
