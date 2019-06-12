@@ -127,8 +127,9 @@ class Weather():
         # print(weather_payload)
 
         # ------------------ DARK SKY IMPLEMENTATION -----------------
+        
         response = requests.get(self.req_url)
-        data = json.loads(response.content)
+        data = json.loads(response.content.decode('utf-8'))
         currently = data['currently']
         hourly = data['hourly']['data']
         daily = data['daily']['data']
