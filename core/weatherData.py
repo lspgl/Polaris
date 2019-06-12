@@ -119,7 +119,7 @@ class Weather():
         temperature_forecast = []
         precipation_forecast = []
         time_forecast = []
-        for d in hourly[:24]:
+        for d in hourly[:12]:
             time_forecast.append(str(datetime.fromtimestamp(d['time']).hour).zfill(2) + ':00')
             temperature_forecast.append(d['temperature'])
             precipation_forecast.append(d['precipProbability'])
