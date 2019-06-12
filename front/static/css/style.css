@@ -81,10 +81,6 @@ html {
     font-size:15vmin;
 }
 
-.weather-icons-forecast {
-    font-size:50px;
-}
-
 #weather-now{
     height: 40%;
     width:100%;
@@ -114,4 +110,63 @@ html {
 
 .temperature-now {
     font-size:15vmin;
+}
+
+#weather-t-forecast{
+    height:100px;
+    width:90%;
+    margin:0;
+    padding:0;
+    position:relative;
+    margin-left:5%;
+    border-bottom: 1px solid #fff3cd;
+}
+
+#weather-p-forecast{
+    margin-top:50px;
+    height:100px;
+    width:90%;
+    position:relative;
+    margin-left:5%;
+    border-bottom: 1px solid #e3effd;
+}
+
+#weather-time-forecast{
+    height:50px;
+    width:90%;
+    position:relative;
+    margin-left:5%;
+}
+
+.temperature-block{
+    background-color:#fff3cd;
+    background-color:#484848;
+    border-top:1px solid #ffc506;
+    position: absolute;
+    bottom:0;
+    color:#fff3cd;
+    font-size:0.9vw;
+    text-align:center;
+    font-weight:100;
+
+}
+
+.precipation-block{
+    background-color:#484848;
+    border-top:1px solid #156dee;
+    position: absolute;
+    bottom:0;
+    color:#e3effd;
+    font-size:0.9vw;
+    text-align:center;
+    font-weight:100;
+}
+
+.time-block{
+    position: absolute;
+    bottom:0;
+    color:#e3effd;
+    font-size:.9vw;
+    text-align:center;
+    font-weight:100;
 }

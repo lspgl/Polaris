@@ -1,5 +1,10 @@
 from yahoo_weather.weather import YahooWeather
 from yahoo_weather.config.units import Unit
+import requests
+import json
+import pprint
+
+from datetime import datetime
 
 import sys
 import os
@@ -14,6 +19,7 @@ class Weather():
     with open(__location__ + '/.secret') as f:
         secret_content = f.readlines()
     API_SECRET = secret_content[0].strip()
+    API_DARKSKY = secret_content[1].strip()
 
     YAHOO_WI_MAPPER = {0: 'wi-tornado',
                        1: 'wi-thunderstorm',
@@ -64,16 +70,53 @@ class Weather():
                        46: 'wi-night-alt-snow',
                        47: 'wi-thunderstorm',
                        }
+    _DARKSKY_WI_MAPPER_STR = """
+    wi-day-sunny: clear-day
+    wi-night-clear: clear-night
+    wi-rain: rain
+    wi-snow: snow
+    wi-sleet: sleet
+    wi-windy: wind
+    wi-fog: fog
+    wi-cloudy: cloudy
+    wi-day-cloudy: partly-cloudy-day
+    wi-night-alt-cloudy: partly-cloudy-night
+    wi-hail: hail
+    wi-thunderstorm: thunderstorm
+    wi-tornado: tornado"""
+    DARKSKY_WI_MAPPER = {}
+    for entry in _DARKSKY_WI_MAPPER_STR.strip().splitlines():
+        mapping = entry.strip().split(':')
+        DARKSKY_WI_MAPPER[mapping[1].strip()] = mapping[0].strip()
+
+    LONG, LAT = '47.3769', '8.5414'
 
     def __init__(self):
         self.data = YahooWeather(APP_ID=self.APP_ID,
                                  api_key=self.API_KEY,
                                  api_secret=self.API_SECRET)
-        self.data.get_yahoo_weather_by_city('zuerich', Unit.celsius)
+
+        self.req_url = 'https://api.darksky.net/forecast/' + self.API_DARKSKY + '/' + self.LONG + ',' + self.LAT + '?'
+
+        params = {'units': 'si',
+                  'exclude': 'minutely'}
+
+        for key, value in params.items():
+            self.req_url += str(key) + '=' + str(value) + '&'
 
     def get_weather(self):
+        debug = False
+        if debug:
+            payload = json.loads("""
+                    {"icon": "wi-day-cloudy", "Tnow": 16, "Thigh": 20, "Tlow": 11, "Summary": "Mostly Cloudy", "T24": [15.56, 16.94, 17.69, 18.43, 19.7, 20.47, 20.39, 19.43, 18.04, 16.11, 14.63, 13.62, 12.87, 12.31, 11.58, 10.85, 10.58, 10.96, 11.94, 13.27, 15.03, 17.01, 18.44, 19.53], "P24": [0.05, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "Time24": ["13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00"]}
+                    """)
+
+            return payload
+
         self.data.get_yahoo_weather_by_city('zuerich', Unit.celsius)
         today = self.data.condition.__dict__
+
+        # print(self.data.current_weather.current_observation.__dict__)
         next_3 = [f.__dict__ for f in self.data.forecasts[:4]]
 
         weather_payload = [today] + next_3
@@ -81,9 +124,42 @@ class Weather():
         for w in weather_payload:
             w['icon'] = self.YAHOO_WI_MAPPER[w['code']]
 
-        print(weather_payload)
+        # print(weather_payload)
 
-        return [today] + next_3
+        # ------------------ DARK SKY IMPLEMENTATION -----------------
+        response = requests.get(self.req_url)
+        data = json.loads(response.content)
+        currently = data['currently']
+        hourly = data['hourly']['data']
+        daily = data['daily']['data']
+
+        temperature_forecast = []
+        precipation_forecast = []
+        time_forecast = []
+        for d in hourly[:24]:
+            time_forecast.append(str(datetime.fromtimestamp(d['time']).hour).zfill(2) + ':00')
+            temperature_forecast.append(d['temperature'])
+            precipation_forecast.append(d['precipProbability'])
+
+        payload = {
+            'icon': self.DARKSKY_WI_MAPPER[currently['icon']],
+            'Tnow': round(currently['temperature']),
+            'Thigh': round(daily[0]['temperatureHigh']),
+            'Tlow': round(daily[0]['temperatureLow']),
+            'Summary': currently['summary'],
+            'T24': temperature_forecast,
+            'P24': precipation_forecast,
+            'Time24': time_forecast
+        }
+
+        # ----------------------------------------------------
+        # return [today] + next_3
+
+        payload = json.loads("""
+        {"icon": "wi-day-cloudy", "Tnow": 16, "Thigh": 20, "Tlow": 11, "Summary": "Mostly Cloudy", "T24": [15.56, 16.94, 17.69, 18.43, 19.7, 20.47, 20.39, 19.43, 18.04, 16.11, 14.63, 13.62, 12.87, 12.31, 11.58, 10.85, 10.58, 10.96, 11.94, 13.27, 15.03, 17.01, 18.44, 19.53], "P24": [0.05, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "Time24": ["13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00"]}
+        """)
+
+        return payload
 
 
 if __name__ == '__main__':

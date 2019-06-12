@@ -57,23 +57,79 @@
 
 
     function get_weather () {
-        $.getJSON("/get_weather_req", function( data ) {
-            var weather_now = data[0]
-            var temperature_now = weather_now.temperature + '°'
-
-            var weather_today = data[1]
-            var temperature_today_high = weather_today.high + '°'
-            var temperature_today_low = weather_today.low + '°'
+        $.getJSON("/get_weather_req", function( weather ) {
+            console.log(weather);
 
             $("#weather-now-icon").html("<nobr><i class='wi " +
-            weather_now.icon +
+            weather.icon +
             " weather-icons-now'></i>" +
             "<span class='temperature-now'>" +
-            temperature_now + "</span></nobr>" +
+            weather.Tnow + "°</span></nobr>" +
             "<br class='weather-icon-linebreak'><span class='weather-condition-now'>"+
-            weather_now.text + " | " + temperature_today_high + '/' + temperature_today_low +
+            weather.Summary + " | " + weather.Thigh + '°/' + weather.Tlow + '°'+
             "</span>"
             );
+
+            var t24_high = Math.max.apply(null, weather.T24);
+
+            var t24_low = Math.min.apply(null, weather.T24);
+            var block_width = 100.0 / (weather.T24.length - 0.01);
+            console.log(block_width)
+
+            var t_blocks = [];
+
+            $.each( weather.T24, function( idx, entry ) {
+                var block_height = 100 * entry / t24_high;
+                var block_left = idx*block_width;
+                t_blocks.push(
+                    '<div class="temperature-block" style="'+
+                    'height:' + block_height + '%;' +
+                    'width:' + block_width + '%;' +
+                    'left:' + block_left + '%;' +
+                    '">'
+                 );
+                 if (idx % 3 == 0){
+                    t_blocks.push(Math.round(entry))
+                 }
+                 t_blocks.push('</div>')
+            });
+            $("#weather-t-forecast").html(t_blocks.join(""))
+
+            var p_blocks = [];
+            $.each( weather.P24, function( idx, entry ) {
+                var block_height = 100 * entry;
+                var block_left = idx*block_width;
+                p_blocks.push(
+                    '<div class="precipation-block" style="'+
+                    'height:' + block_height + '%;' +
+                    'width:' + block_width + '%;' +
+                    'left:' + block_left + '%;' +
+                    '">'
+                 );
+                 if (idx % 3 == 0 && Math.round(entry) >= 10 ){
+                    p_blocks.push(Math.round(entry))
+                 }
+                 p_blocks.push('</div>')
+            });
+            $("#weather-p-forecast").html(p_blocks.join(""))
+
+            var time_blocks = [];
+            $.each( weather.Time24, function( idx, entry ) {
+                var block_left = idx*block_width;
+                time_blocks.push(
+                    '<div class="time-block" style="'+
+                    'width:' + block_width + '%;' +
+                    'left:' + block_left + '%;' +
+                    '">'
+                 );
+                 if (idx % 3 == 0){
+                    time_blocks.push(entry)
+                 }
+                 time_blocks.push('</div>')
+            });
+            $("#weather-time-forecast").html(time_blocks.join(""))
+
+
         });
     }
 
@@ -81,7 +137,7 @@
         get_departures()
         get_weather()
         setInterval(get_departures, 5000);
-        setInterval(get_weather, 60000);
+        setInterval(get_weather, 5*60000);
 
     });
 
@@ -97,6 +153,15 @@
         <div id="weather-now-icon"></div>
     </div>
     <div id="weather-forecast"></div>
+
+    <div id="weather-t-forecast">
+    </div>
+
+    <div id="weather-p-forecast">
+    </div>
+
+    <div id="weather-time-forecast">
+    </div>
 </div>
 </body>
 </html>

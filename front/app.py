@@ -34,5 +34,4 @@ def get_departures_req():
 @app.route('/get_weather_req')
 def get_weather_req():
     data = weather.get_weather()
-    print(jsonify(data))
     return jsonify(data)
