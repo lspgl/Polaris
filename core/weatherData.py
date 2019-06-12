@@ -1,5 +1,3 @@
-from yahoo_weather.weather import YahooWeather
-from yahoo_weather.config.units import Unit
 import requests
 import json
 import pprint
@@ -92,9 +90,6 @@ class Weather():
     LONG, LAT = '47.3769', '8.5414'
 
     def __init__(self):
-        self.data = YahooWeather(APP_ID=self.APP_ID,
-                                 api_key=self.API_KEY,
-                                 api_secret=self.API_SECRET)
 
         self.req_url = 'https://api.darksky.net/forecast/' + self.API_DARKSKY + '/' + self.LONG + ',' + self.LAT + '?'
 
@@ -113,21 +108,8 @@ class Weather():
 
             return payload
 
-        self.data.get_yahoo_weather_by_city('zuerich', Unit.celsius)
-        today = self.data.condition.__dict__
-
-        # print(self.data.current_weather.current_observation.__dict__)
-        next_3 = [f.__dict__ for f in self.data.forecasts[:4]]
-
-        weather_payload = [today] + next_3
-
-        for w in weather_payload:
-            w['icon'] = self.YAHOO_WI_MAPPER[w['code']]
-
-        # print(weather_payload)
-
         # ------------------ DARK SKY IMPLEMENTATION -----------------
-        
+
         response = requests.get(self.req_url)
         data = json.loads(response.content.decode('utf-8'))
         currently = data['currently']
@@ -154,11 +136,6 @@ class Weather():
         }
 
         # ----------------------------------------------------
-        # return [today] + next_3
-
-        payload = json.loads("""
-        {"icon": "wi-day-cloudy", "Tnow": 16, "Thigh": 20, "Tlow": 11, "Summary": "Mostly Cloudy", "T24": [15.56, 16.94, 17.69, 18.43, 19.7, 20.47, 20.39, 19.43, 18.04, 16.11, 14.63, 13.62, 12.87, 12.31, 11.58, 10.85, 10.58, 10.96, 11.94, 13.27, 15.03, 17.01, 18.44, 19.53], "P24": [0.05, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], "Time24": ["13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00", "00:00", "01:00", "02:00", "03:00", "04:00", "05:00", "06:00", "07:00", "08:00", "09:00", "10:00", "11:00", "12:00"]}
-        """)
 
         return payload
 
