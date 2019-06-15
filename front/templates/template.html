@@ -77,13 +77,15 @@
             console.log(block_width)
 
             var t_blocks = [];
-
+            var t_poly_points = "-10,100 ";
+            var block_height = 0
             $.each( weather.T24, function( idx, entry ) {
-                var block_height = 100 * entry / t24_high;
+                block_height = 100 * entry / t24_high;
                 var block_left = idx*block_width;
+                t_poly_points += (block_left) + ',' + (100 - block_height) + ' '
                 t_blocks.push(
                     '<div class="temperature-block" style="'+
-                    'height:' + block_height + '%;' +
+                    'height:' + (block_height*0.9) + '%;' +
                     'width:' + block_width + '%;' +
                     'left:' + block_left + '%;' +
                     '">'
@@ -94,24 +96,32 @@
                  t_blocks.push('</div>')
             });
             $("#weather-t-forecast").html(t_blocks.join(""))
+            t_poly_points += "110," + (100 - block_height) +" 110,100"
+            $("#weather-t-forecast-plot").attr("points", t_poly_points);
 
             var p_blocks = [];
+            var p_poly_points = "-10,100 ";
+            var block_height = 0
             $.each( weather.P24, function( idx, entry ) {
-                var block_height = 100 * entry;
+                block_height = 100 * entry;
                 var block_left = idx*block_width;
+                p_poly_points += (block_left) + ',' + (100 - block_height) + ' '
                 p_blocks.push(
                     '<div class="precipation-block" style="'+
-                    'height:' + block_height + '%;' +
+                    'height:' + (block_height*0.9) + '%;' +
                     'width:' + block_width + '%;' +
                     'left:' + block_left + '%;' +
                     '">'
                  );
-                 if (idx % 3 == 0 && Math.round(entry) >= 10 ){
-                    p_blocks.push(Math.round(entry))
+                 if (idx % 3 == 0 && Math.round(entry*100) >= 10 ){
+                    p_blocks.push(Math.round(entry*100))
                  }
                  p_blocks.push('</div>')
             });
             $("#weather-p-forecast").html(p_blocks.join(""))
+            p_poly_points += "110," + (100 - block_height) +" 110,100"
+            console.log(p_poly_points);
+            $("#weather-p-forecast-plot").attr("points", p_poly_points);
 
             var time_blocks = [];
             $.each( weather.Time24, function( idx, entry ) {
@@ -154,14 +164,54 @@
     </div>
     <div id="weather-forecast"></div>
 
-    <div id="weather-t-forecast">
+    <div class="weather-plot-forecast" style="border-bottom: 1px solid #fff3cd;">
+        <svg height=100% width=100% preserveAspectRatio="none" viewBox="0 0 100 100">
+            <defs>
+                <linearGradient id="linear-t" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%"   stop-color="#6b5f5c"/>
+                  <stop offset="100%" stop-color="#4a464b"/>
+                </linearGradient>
+            </defs>
+            <polyline
+                fill="url(#linear-t)"
+                stroke="#e2a884"
+                stroke-width="2"
+                vector-effect="non-scaling-stroke"
+                id="weather-t-forecast-plot"
+                points=""
+            ></polyline>
+        </svg>
+        <div id="weather-t-forecast">
+    </div>
     </div>
 
-    <div id="weather-p-forecast">
+
+
+
+    <div class="weather-plot-forecast" style="border-bottom: 1px solid #2ea6ad;">
+        <svg height=100% width=100% preserveAspectRatio="none" viewBox="0 0 100 100">
+            <defs>
+                <linearGradient id="linear-p" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%"   stop-color="#5e75ad"/>
+                  <stop offset="100%" stop-color="#484848"/>
+                </linearGradient>
+            </defs>
+            <polyline
+                fill="url(#linear-p)"
+                stroke="#2ea6ad"
+                stroke-width="2"
+                vector-effect="non-scaling-stroke"
+                id="weather-p-forecast-plot"
+                points=""
+            ></polyline>
+        </svg>
+        <div id="weather-p-forecast">
+    </div>
     </div>
 
     <div id="weather-time-forecast">
     </div>
 </div>
 </body>
+
 </html>
