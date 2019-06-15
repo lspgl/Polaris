@@ -106,6 +106,22 @@ def get_departures(provider):
         else:
             dt_min = str(dt_min) + "'"
 
+        if 'ca.' in dep.delay:
+            delay = dep.delay.split('ca.', 1)[-1].strip()
+            if ':' in delay:
+                dt_min = "<span class='delay-minutes'>" + dep.delay + "</span>"
+            else:
+                delay_time = int(delay.split('+', 1)[-1].split('Min.')[0].strip())
+                dt_min = str(int(dt_min[:-1]) + delay_time) + "' <span class='delay-minutes'>(+" + str(delay_time) + "')</span>"
+        elif dep.delay == 'Ausfall':
+            dt_min = "<span class='delay-cancelled'>Ausfall</span>"
+        elif dep.delay != '' and dep.delay != 'Zusätzliche Fahrt':
+            dt_min = dt_min + ' ' + dep.delay
+
+        if 'Zusätzliche Fahrt' in dep.delay:
+            dt_min += ' (Zusätzliche Fahrt)'
+            dt_min = dt_min.replace(') (', ' ')
+
         dest = dep.final_destination.split('Zürich,', 1)[-1].strip()
 
         departure_data.append({'line': dep.line,

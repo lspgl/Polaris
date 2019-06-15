@@ -90,7 +90,7 @@ html {
 #weather-now{
     height: 40%;
     width:calc(100%);
-    
+
     border-radius:20px;
     color: white;
     paddin
@@ -182,4 +182,12 @@ html {
     position:relative;
     margin-left:5%;
     /*clip-path: polygon(0 100%, 0 72%, 19% 49%, 52% 45%, 79% 18%, 100% 10%, 100% 100%);*/
+}
+
+.delay-minutes {
+    color:red;
+}
+
+.delay-cancelled {
+    color:red;
 }
