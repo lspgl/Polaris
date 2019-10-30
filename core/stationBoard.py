@@ -23,6 +23,11 @@ class Departure:
     def __init__(self, row):
         self.line = row['Fahrt']
 
+        if len(self.line.split(' ')) > 2:
+            self.line = ' '.join(self.line.split(' ')[:2])
+
+        print(self.line)
+
         if 'NB N' in self.line:
             self.number = self.line.split('NB ')[-1]
             self.mode = 'NB'
