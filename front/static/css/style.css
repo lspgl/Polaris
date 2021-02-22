@@ -108,6 +108,7 @@ html {
     justify-content:center;
     align-content:center;
     flex-direction:column;
+    color: red;
 }
 
 .weather-icon-linebreak {
