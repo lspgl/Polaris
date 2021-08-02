@@ -5,12 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fee2ae93-2e68-4e2e-9401-c9e61f63b03c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/core/stationBoardv2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/Polaris.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Polaris.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/transportData.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/transportData.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

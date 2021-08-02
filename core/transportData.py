@@ -18,7 +18,6 @@ from stationBoardv2 import StationBoard
 
 
 class SbbProvider:
-    API_BASE = 'http://fahrplan.sbb.ch/bin/stboard.exe/dn'
     API_BASE = 'https://transport.opendata.ch/v1/stationboard'
     BPUIC = {'Milchbuck': '8591276',
              'Rotbuchstrasse': '8591326',
@@ -43,14 +42,7 @@ class SbbProvider:
         board = content['stationboard']
         return station, board
 
-    def urlmaker(self, station_id, nqueries, time='now'):
-        params = {'boardType': 'dep',
-                  'productsFilter': '1111111111',
-                  'start': 'yes',
-                  'time': time,
-                  'maxJourneys': str(nqueries),
-                  'input': str(station_id)}
-
+    def urlmaker(self, station_id, nqueries):
         params = {'id': station_id,
                   'limit': nqueries}
 
