@@ -7,7 +7,7 @@ def main():
     watchlist = [7, 14]
 
     watch_data = {}
-    station_board, specials = provider.content
+    station_board = provider.content
     for dep in station_board.departures:
         print(dep)
         if int(dep.number) in watchlist:

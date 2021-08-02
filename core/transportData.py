@@ -9,7 +9,8 @@ __location__ = os.path.realpath(
     os.path.join(os.getcwd(), os.path.dirname(__file__)))
 sys.path.append(__location__)
 
-from stationBoard import StationBoard
+# from stationBoard import StationBoard
+from stationBoardv2 import StationBoard
 
 
 # SBB URL Example
@@ -18,6 +19,7 @@ from stationBoard import StationBoard
 
 class SbbProvider:
     API_BASE = 'http://fahrplan.sbb.ch/bin/stboard.exe/dn'
+    API_BASE = 'https://transport.opendata.ch/v1/stationboard'
     BPUIC = {'Milchbuck': '8591276',
              'Rotbuchstrasse': '8591326',
              'ZurichHB': '8503000'}
@@ -28,50 +30,18 @@ class SbbProvider:
 
     @property
     def content(self):
-        fetch = self.fetch(self.station_id, nqueries=str(self.n_req))
-        soup = BeautifulSoup(fetch, 'html.parser')
-        table = soup.find('table')
-        rows = table.find_all('tr')
+        station, board = self.fetch(self.station_id, nqueries=str(self.n_req))
+        stationboard = StationBoard(board)
+        return stationboard
 
-        header = rows[0]
-        header = [idx.contents[0] for idx in header.find_all('th')]
-        data = []
-        for row in rows[1:]:
-            cols = row.find_all('td')
-            cols = [element.text.strip() for element in cols]
-            data.append(cols)
-        station_board, specials = self.parse_data(data, header)
-        return station_board, specials
-
-    def parse_data(self, data, header):
-        specials = []
-        station_board = StationBoard(header)
-        departure_index = header.index('Ab')
-        for row in data:
-            if len(row) != len(header):
-                specials.append(row)
-            else:
-                if row[departure_index][2] == ':':
-                    dep_time = row[departure_index].split(':')
-                    try:
-                        int(dep_time[0])
-                        int(dep_time[1])
-                        station_board.add_departure(row)
-                    except ValueError:
-                        specials.append(row)
-
-        return station_board, specials
-
-    def fetch(self, station_id, nqueries='20', time='now'):
+    def fetch(self, station_id, nqueries='20'):
         url = self.urlmaker(station_id, nqueries)
         print(url)
         resource = urllib.request.urlopen(url)
-        content_raw = resource.read().decode(resource.headers.get_content_charset())
-
-        content_open = content_raw.split('<table cellspacing="0" class="hfs_stboard sq_dep_header">', 1)[1]
-        content = content_open.split('</table>', 1)[0]
-        content = '<table>' + content + '</table>'
-        return content
+        content = json.loads(resource.read())
+        station = content['station']
+        board = content['stationboard']
+        return station, board
 
     def urlmaker(self, station_id, nqueries, time='now'):
         params = {'boardType': 'dep',
@@ -81,13 +51,16 @@ class SbbProvider:
                   'maxJourneys': str(nqueries),
                   'input': str(station_id)}
 
+        params = {'id': station_id,
+                  'limit': nqueries}
+
         param_string = '&'.join([key + '=' + value for key, value in params.items()])
         return self.API_BASE + '?' + param_string
 
 
 def get_departures(provider):
     departure_data = []
-    station_board, specials = provider.content
+    station_board = provider.content
     for dep in station_board.departures:
         t = dep.departure_time
         t_str = t.strftime("%d-%m %H:%M")
@@ -97,7 +70,7 @@ def get_departures(provider):
         if dt_min > 1000:
             dt_min -= 1440
 
-        if dt_min in [0, -1] and dep.delay == '':
+        if dt_min in [0, -1] and dep.delay is None:
             if dep.mode == 'T':
                 img = 'tram'
             else:
@@ -106,21 +79,8 @@ def get_departures(provider):
         else:
             dt_min = str(dt_min) + "'"
 
-        if 'ca.' in dep.delay:
-            delay = dep.delay.split('ca.', 1)[-1].strip()
-            if ':' in delay:
-                dt_min = "<span class='delay-minutes'>" + dep.delay + "</span>"
-            else:
-                delay_time = int(delay.split('+', 1)[-1].split('Min.')[0].strip())
-                dt_min = str(int(dt_min[:-1]) + delay_time) + "' <span class='delay-minutes'>(+" + str(delay_time) + "')</span>"
-        elif dep.delay == 'Ausfall':
-            dt_min = "<span class='delay-cancelled'>Ausfall</span>"
-        elif dep.delay != '' and dep.delay != 'Zusätzliche Fahrt':
-            dt_min = dt_min + ' ' + dep.delay
-
-        if 'Zusätzliche Fahrt' in dep.delay:
-            dt_min += ' (Zusätzliche Fahrt)'
-            dt_min = dt_min.replace(') (', ' ')
+        if dep.delay is not None:
+            dt_min += "<span class='delay-minutes'>" + dep.delay + "</span>"
 
         dest = dep.final_destination.split('Zürich,', 1)[-1].strip()
 
